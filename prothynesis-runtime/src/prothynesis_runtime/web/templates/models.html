@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+<div class="title">Models</div>
+<div class="card">
+  <table style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr style="text-align:left; color: var(--muted); border-bottom: 1px solid var(--border);">
+        <th style="padding:8px;">ID</th>
+        <th style="padding:8px;">Object</th>
+        <th style="padding:8px;">Owned By</th>
+        <th style="padding:8px;">Capabilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in models %}
+      <tr style="border-bottom: 1px solid var(--border);">
+        <td style="padding:10px 8px;">{{ m.id }}</td>
+        <td style="padding:10px 8px;">{{ m.object }}</td>
+        <td style="padding:10px 8px;">{{ m.owned_by }}</td>
+        <td style="padding:10px 8px;">{{ m.capabilities | join(", ") }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+<div class="title">Account</div>
+<div class="card">
+  <div class="row">
+    <div class="col">
+      <div class="title" style="font-size:14px;">GitHub Connection</div>
+      <div id="gh-status" class="status-badge {% if account_status.connected %}running{% endif %}">
+        {{ "Connected" if account_status.connected else "Disconnected" }}
+      </div>
+      <div style="margin-top:10px; color: var(--muted);">
+        Username: <span id="gh-username">{{ account_status.username or "N/A" }}</span>
+      </div>
+    </div>
+    <div class="col">
+      <button id="connect-btn" class="secondary" style="display: {% if account_status.connected %}none{% else %}inline-block{% endif %};">
+        Connect GitHub
+      </button>
+      <button id="disconnect-btn" class="danger" style="display: {% if account_status.connected %}inline-block{% else %}none{% endif %};">
+        Disconnect
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+  document.getElementById("connect-btn").addEventListener("click", async () => {
+    const res = await fetch("/v1/account/github/connect", { method: "POST" });
+    const data = await res.json();
+    if (data.auth_url) window.location = data.auth_url;
+  });
+  document.getElementById("disconnect-btn").addEventListener("click", async () => {
+    await fetch("/v1/account/github/disconnect", { method: "POST" });
+    location.reload();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %}
+<div class="title">Hardware</div>
+<div class="card">
+  <div id="hw-info">Loading...</div>
+</div>
+<script>
+  async function load() {
+    const res = await fetch("/v1/status");
+    const data = await res.json();
+    const el = document.getElementById("hw-info");
+    el.innerHTML = "<pre>" + JSON.stringify(data.hardware || {}, null, 2) + "</pre>";
+  }
+  load();
+</script>
+{% endblock %}

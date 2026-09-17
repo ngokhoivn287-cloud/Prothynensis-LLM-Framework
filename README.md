@@ -157,4 +157,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Security
 
+<<<<<<< HEAD
 See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
+=======
+See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
+>>>>>>> 89d9eda (Prothynesis-LLM-Framework)

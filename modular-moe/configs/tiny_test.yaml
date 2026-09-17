@@ -1,0 +1,149 @@
+# Tiny Test Configuration (2 experts, minimal model)
+# For end-to-end pipeline testing
+
+model:
+  vocab_size: 1024
+  max_seq_len: 128
+  hidden_dim: 256
+  num_layers: 4
+  num_heads: 4
+  head_dim: 64
+  
+  # MoE
+  num_experts: 2
+  top_k: 2
+  expert_hidden_dim: 512  # 2x hidden_dim
+  expert_activation: "silu"
+  expert_norm: "rmsnorm"
+  expert_bias: false
+  expert_dropout: 0.0
+  router_hidden_dim: null
+  router_bias: false
+  
+  tie_embeddings: true
+  use_rmsnorm: true
+  norm_eps: 1e-5
+  attn_dropout: 0.0
+  resid_dropout: 0.0
+  causal: true
+  use_flash_attn: false
+
+training:
+  expert_pretrain:
+    batch_size: 2
+    microbatch_size: 1
+    gradient_accumulation_steps: 2
+    learning_rate: 1e-3
+    min_lr: 1e-4
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.95
+    grad_clip: 1.0
+    warmup_steps: 10
+    max_steps: 100
+    max_tokens: 10000
+    dtype: "float32"
+    compile: false
+    
+  router_train:
+    batch_size: 4
+    microbatch_size: 2
+    gradient_accumulation_steps: 1
+    learning_rate: 1e-3
+    min_lr: 1e-4
+    weight_decay: 0.0
+    beta1: 0.9
+    beta2: 0.95
+    grad_clip: 1.0
+    warmup_steps: 10
+    max_steps: 50
+    freeze_experts: true
+    freeze_shared: true
+    dtype: "float32"
+    compile: false
+    
+  joint_train:
+    batch_size: 2
+    microbatch_size: 1
+    gradient_accumulation_steps: 2
+    learning_rate: 5e-4
+    min_lr: 5e-5
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.95
+    grad_clip: 1.0
+    warmup_steps: 10
+    max_steps: 100
+    max_tokens: 10000
+    dtype: "float32"
+    compile: false
+    unfreeze_schedule:
+      step_0: "router_only"
+      step_20: "router + shared"
+      step_50: "all"
+  
+  seed: 42
+  log_every: 5
+  eval_every: 20
+  save_every: 50
+  burst_steps: 50
+  checkpoint_every: 25
+  pause_after_checkpoint: false
+
+data:
+  dataset_name: "synthetic"
+  text_column: "text"
+  min_doc_length: 10
+  max_doc_length: 128
+  deduplicate: false
+  normalize: false
+  tokenizer_name: "char"  # Character-level for tiny test
+  tokenizer_vocab_size: 1024
+  num_shards: 2
+  shard_strategy: "round_robin"
+  expert_specific_ratio: 0.8
+  shared_data_shard: "shared"
+  shard_seed: 42
+  num_workers: 0
+  prefetch_factor: 1
+  pin_memory: false
+
+checkpoint:
+  root_dir: "checkpoints"
+  format: "pytorch"
+  save_optimizer: true
+  save_scheduler: true
+  save_rng: true
+  atomic_write: true
+  keep_last_n: 2
+
+evaluation:
+  eval_batch_size: 4
+  eval_steps: 10
+  generation:
+    max_new_tokens: 20
+    temperature: 0.8
+    top_k: 10
+    top_p: 0.9
+  metrics:
+    - "loss"
+    - "perplexity"
+    - "expert_utilization"
+    - "routing_entropy"
+    - "load_balance"
+    - "dead_experts"
+
+hardware:
+  device: "cpu"  # Use CPU for tiny test
+  device_ids: []
+  mixed_precision: false
+  precision: "fp32"
+  gradient_checkpointing: false
+  cpu_offload: false
+
+logging:
+  level: "DEBUG"
+  console: true
+  file: false
+  wandb:
+    enabled: false

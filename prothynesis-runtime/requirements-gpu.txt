@@ -1,0 +1,6 @@
+-r requirements.txt
+
+torch>=2.3.0+cu121
+bitsandbytes>=0.43.0
+flash-attn>=2.5.0; platform_system=='Linux'
+xformers>=0.0.23; platform_system=='Linux'

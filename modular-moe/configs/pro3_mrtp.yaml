@@ -1,0 +1,24 @@
+# Pro3 MRTP Configuration
+
+solver:
+  count: 3
+  parameter_count_per_model: 150000000
+  hidden_dim: 384
+  num_layers: 10
+  num_heads: 6
+  head_dim: 64
+  ffn_hidden_dim: 1536
+  activation: silu
+  norm_type: rmsnorm
+  vocab_size: 50304
+  max_seq_len: 4096
+  tie_embeddings: true
+  dropout: 0.0
+
+population_selection:
+  redundancy_threshold: 0.92
+  retention_ratio: 0.55
+  quality_floor: 0.5
+
+system:
+  solver_params: 450000000

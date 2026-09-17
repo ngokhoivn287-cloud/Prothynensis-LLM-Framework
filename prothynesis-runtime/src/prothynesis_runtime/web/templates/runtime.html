@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %}
+<div class="title">Runtime</div>
+<div class="card">
+  <pre id="runtime-json">{{ runtime_info | tojson(indent=2) }}</pre>
+</div>
+<script>
+  async function refresh() {
+    const res = await fetch("/v1/status");
+    const data = await res.json();
+    document.getElementById("runtime-json").textContent = JSON.stringify(data, null, 2);
+  }
+  refresh();
+  setInterval(refresh, 2000);
+</script>
+{% endblock %}

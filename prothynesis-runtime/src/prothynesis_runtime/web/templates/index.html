@@ -1,0 +1,86 @@
+{% extends "base.html" %} {% block content %}
+<div class="title">Chat</div>
+<div class="card">
+  <div class="row" style="align-items: center; justify-content: space-between;">
+    <div class="col">
+      <select id="model-select">
+        {% for m in models %}
+        <option value="{{ m.id }}">{{ m.id }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col" style="max-width: 320px;">
+      <button id="clear-btn" class="secondary">Clear</button>
+    </div>
+  </div>
+</div>
+<div class="card" id="messages" style="min-height: 360px; max-height: 60vh; overflow-y: auto;">
+  <div class="title" style="font-size:14px; color: var(--muted);">Messages</div>
+  <div id="message-list"></div>
+</div>
+<div class="card">
+  <div class="row">
+    <textarea id="user-input" rows="3" placeholder="Type a message..."></textarea>
+  </div>
+  <div class="row" style="margin-top:10px; justify-content: flex-end;">
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+<script>
+  const messagesEl = document.getElementById("message-list");
+  const inputEl = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+  const clearBtn = document.getElementById("clear-btn");
+  const modelSelect = document.getElementById("model-select");
+
+  function addMessage(role, content) {
+    const row = document.createElement("div");
+    row.style.marginBottom = "12px";
+    const label = document.createElement("div");
+    label.style.color = "var(--muted)";
+    label.style.fontSize = "12px";
+    label.textContent = role.toUpperCase();
+    const body = document.createElement("div");
+    body.textContent = content;
+    row.appendChild(label);
+    row.appendChild(body);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  async function send() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    addMessage("user", text);
+    inputEl.value = "";
+    sendBtn.disabled = true;
+    const model = modelSelect.value;
+    try {
+      const res = await fetch("/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model, messages: [{ role: "user", content: text }] }),
+      });
+      if (!res.ok) throw new Error("Request failed");
+      const data = await res.json();
+      const content = data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content;
+      addMessage("assistant", content || "(no content)");
+    } catch (e) {
+      addMessage("system", "Error: " + e.message);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener("click", send);
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  });
+  clearBtn.addEventListener("click", () => {
+    messagesEl.innerHTML = "";
+  });
+</script>
+{% endblock %}

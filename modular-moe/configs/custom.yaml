@@ -1,0 +1,78 @@
+# Prothynesis Custom Configuration Template
+# Override any values from the base configuration
+
+architecture: custom
+
+solver:
+  count: 1000  # Custom pool size
+  parameter_count_per_model: 77161472
+  total_parameters: 77161472000  # Calculated as count × parameter_count_per_model
+  hidden_dim: 512
+  num_layers: 12
+  num_heads: 8
+  head_dim: 64
+  ffn_hidden_dim: 2048
+  activation: silu
+  norm_type: rmsnorm
+  vocab_size: 50304
+  max_seq_len: 2048
+  tie_embeddings: true
+  dropout: 0.0
+
+orchestration:
+  orchestral: 2
+  chief: 1
+  master: 1
+  ultimate: 1
+  total_orchestral_models: 5
+  orchestral_params_each: 77161472
+  orchestral_params_total: 385807360
+
+system:
+  solver_params: 77161472000
+  orchestral_params: 385807360
+  total_params: 77547279360
+
+datasets:
+  root: ./data
+  min_coverage_all_domains: true
+  minimum_reasoning_exposure: 0.15
+  minimum_verification_exposure: 0.05
+
+training:
+  batch_size: 8
+  learning_rate: 0.0001
+  context_length: 2048
+  gradient_accumulation: 1
+  mixed_precision: true
+  epochs: 1
+  checkpoint_dir: ./checkpoints
+  manifest_dir: ./manifests
+
+recruitment:
+  min_active_models: 1
+  max_active_models: 16
+  default_top_k: 2
+  compute_budget: 1.0
+  latency_budget: 30.0
+  deliberation_round_limit: 5
+  confidence_threshold: 0.8
+  disagreement_threshold: 0.2
+
+cache:
+  max_gpu_models: 2
+  max_cpu_models: 8
+  lazy_loading: true
+  cpu_offload: true
+
+benchmarks:
+  enabled: true
+  periodic_evaluation: true
+  evaluation_steps: 1000
+
+inference:
+  default_max_new_tokens: 100
+  default_temperature: 0.7
+  default_top_k: 2
+  default_top_p: 1.0
+  streaming: true

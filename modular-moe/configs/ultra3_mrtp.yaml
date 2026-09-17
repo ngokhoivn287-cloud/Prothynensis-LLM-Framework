@@ -1,0 +1,37 @@
+# Ultra3 MRTP Configuration
+
+solver:
+  count: 3
+  parameter_count_per_model: 150000000
+  hidden_dim: 512
+  num_layers: 12
+  num_heads: 8
+  head_dim: 64
+  ffn_hidden_dim: 2048
+  activation: silu
+  norm_type: rmsnorm
+  vocab_size: 50304
+  max_seq_len: 4096
+  tie_embeddings: true
+  dropout: 0.0
+
+population_selection:
+  redundancy_threshold: 0.90
+  retention_ratio: 0.6
+  quality_floor: 0.5
+
+vision_population:
+  count: 2
+  hidden_dim: 256
+  num_layers: 2
+  num_heads: 4
+  head_dim: 64
+  ffn_hidden_dim: 1024
+  image_size: 64
+  patch_size: 8
+  vision_hidden_dim: 256
+  vision_num_layers: 2
+  vision_num_heads: 4
+
+system:
+  solver_params: 450000000

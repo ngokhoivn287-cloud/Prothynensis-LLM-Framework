@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+.eggs/
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+MANIFEST
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Runtime data (stored in %LOCALAPPDATA%\Prothynesis)
+*.pmo
+models/
+downloads/
+logs/
+cache/
+registry/
+checkpoints/
+data/
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# GPU build artifacts
+*.cu.o
+*.ptx
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Packaging
+*.exe
+*.msi
+*.dmg
+*.AppImage
+
+# Type checking
+.mypy_cache/
+
+# Linting
+.ruff_cache/
+
+# Kilo
+.kilo/

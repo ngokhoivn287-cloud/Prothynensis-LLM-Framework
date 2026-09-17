@@ -1,0 +1,536 @@
+# Prothynesis Modular MoE - Dataset Registry
+# This registry defines all available datasets for the training corpus.
+# Each dataset entry includes metadata for downloading, processing, and sampling.
+#
+# Usage:
+#   python scripts/download_datasets.py --config configs/datasets.yaml --profile prototype
+#   python scripts/download_datasets.py --config configs/datasets.yaml --profile tiny --only code math
+
+datasets:
+  # ============================================================
+  # HIGH-QUALITY WEB CORPORA
+  # ============================================================
+  - name: fineweb
+    category: web
+    source: huggingface
+    hf_id: HuggingFaceFW/fineweb
+    subset: sample-10BT
+    enabled: true
+    weight: 0.30
+    language: [en]
+    license: ODC-By-1.0
+    license_status: VERIFIED
+    expected_size_gb: 45
+    expected_tokens_billions: 10
+    download_method: huggingface_streaming
+    preprocessing: fineweb
+    notes: "High-quality Common Crawl subset with aggressive filtering. 10B token sample."
+
+  - name: fineweb_edu
+    category: web
+    source: huggingface
+    hf_id: HuggingFaceFW/fineweb-edu
+    subset: sample-10BT
+    enabled: true
+    weight: 0.15
+    language: [en]
+    license: ODC-By-1.0
+    license_status: VERIFIED
+    expected_size_gb: 15
+    expected_tokens_billions: 3
+    download_method: huggingface_streaming
+    preprocessing: fineweb
+    notes: "Educational subset of FineWeb, higher quality for reasoning tasks."
+
+  - name: redpajama_v2
+    category: web
+    source: huggingface
+    hf_id: togethercomputer/RedPajama-Data-V2
+    subset: default
+    enabled: true
+    weight: 0.10
+    language: [en]
+    license: Apache-2.0
+    license_status: VERIFIED
+    expected_size_gb: 30
+    expected_tokens_billions: 8
+    download_method: huggingface_streaming
+    preprocessing: redpajama
+    notes: "Reproduction of LLaMA training dataset. Multiple quality signals."
+
+  - name: dclm_baseline
+    category: web
+    source: huggingface
+    hf_id: mlfoundations/dclm-baseline-1.0
+    subset: default
+    enabled: true
+    weight: 0.10
+    language: [en]
+    license: ODC-By-1.0
+    license_status: VERIFIED
+    expected_size_gb: 20
+    expected_tokens_billions: 5
+    download_method: huggingface_streaming
+    preprocessing: fineweb
+    notes: "DCLM baseline - high-quality filtered Common Crawl."
+
+  # ============================================================
+  # WIKIPEDIA / ENCYCLOPEDIC
+  # ============================================================
+  - name: wikipedia_en
+    category: encyclopedia
+    source: huggingface
+    hf_id: wikimedia/wikipedia
+    subset: "20231101.en"
+    enabled: true
+    weight: 0.08
+    language: [en]
+    license: CC-BY-SA-3.0
+    license_status: VERIFIED
+    expected_size_gb: 5
+    expected_tokens_billions: 1.5
+    download_method: huggingface_streaming
+    preprocessing: wikipedia
+    notes: "English Wikipedia dump (wikimedia/wikipedia). High-quality encyclopedic knowledge."
+
+  - name: wikipedia_vi
+    category: encyclopedia
+    source: huggingface
+    hf_id: wikimedia/wikipedia
+    subset: "20231101.vi"
+    enabled: true
+    weight: 0.04
+    language: [vi]
+    license: CC-BY-SA-3.0
+    license_status: VERIFIED
+    expected_size_gb: 0.5
+    expected_tokens_billions: 0.15
+    download_method: huggingface_streaming
+    preprocessing: wikipedia
+    notes: "Vietnamese Wikipedia dump (wikimedia/wikipedia). Critical for Vietnamese language support."
+
+  - name: wikipedia_multilingual
+    category: encyclopedia
+    source: huggingface
+    hf_id: wikimedia/wikipedia
+    subset: "20231101.zh,20231101.ja,20231101.ko,20231101.fr,20231101.de,20231101.es,20231101.pt,20231101.ru,20231101.ar,20231101.hi"
+    enabled: true
+    weight: 0.05
+    language: [zh, ja, ko, fr, de, es, pt, ru, ar, hi]
+    license: CC-BY-SA-3.0
+    license_status: VERIFIED
+    expected_size_gb: 8
+    expected_tokens_billions: 2.5
+    download_method: huggingface_streaming
+    preprocessing: wikipedia
+    notes: "Top 10 non-English Wikipedia languages (wikimedia/wikipedia) for multilingual support."
+
+  # ============================================================
+  # BOOKS / LONG-FORM TEXT
+  # ============================================================
+  - name: gutenberg
+    category: books
+    source: huggingface
+    hf_id: gutenberg
+    subset: default
+    enabled: true
+    weight: 0.03
+    language: [en, vi, fr, de, es, zh]
+    license: Public Domain / CC0
+    license_status: VERIFIED
+    expected_size_gb: 2
+    expected_tokens_billions: 0.5
+    download_method: huggingface_streaming
+    preprocessing: books
+    notes: "Project Gutenberg public domain books. Multilingual."
+
+  - name: openwebtext2
+    category: books
+    source: huggingface
+    hf_id: Skylion007/openwebtext
+    subset: default
+    enabled: true
+    weight: 0.04
+    language: [en]
+    license: Various (open web)
+    license_status: REVIEW_REQUIRED
+    expected_size_gb: 15
+    expected_tokens_billions: 4
+    download_method: huggingface_streaming
+    preprocessing: web_general
+    notes: "OpenWebText2 - reproduction of WebText corpus. License review needed."
+
+  # ============================================================
+  # SCIENTIFIC / ACADEMIC
+  # ============================================================
+  - name: arxiv
+    category: science
+    source: huggingface
+    hf_id: Cornell-University/arxiv
+    subset: default
+    enabled: true
+    weight: 0.04
+    language: [en]
+    license: Various (arXiv terms)
+    license_status: VERIFIED
+    expected_size_gb: 10
+    expected_tokens_billions: 2
+    download_method: huggingface_streaming
+    preprocessing: scientific
+    notes: "arXiv papers from Cornell University dataset."
+
+  - name: pubmed_abstracts
+    category: science
+    source: huggingface
+    hf_id: pubmed
+    subset: default
+    enabled: true
+    weight: 0.02
+    language: [en]
+    license: Various (PubMed terms)
+    license_status: VERIFIED
+    expected_size_gb: 5
+    expected_tokens_billions: 1
+    download_method: huggingface_streaming
+    preprocessing: scientific
+    notes: "PubMed biomedical abstracts. High-quality scientific text."
+
+  # ============================================================
+  # CODE / PROGRAMMING
+  # ============================================================
+  - name: the_stack_v2
+    category: code
+    source: huggingface
+    hf_id: bigcode/the-stack-v2
+    subset: default
+    enabled: false
+    weight: 0.10
+    language: [python, javascript, java, cpp, go, rust, typescript, c, csharp, php]
+    license: Permissive only (MIT, Apache-2.0, BSD)
+    license_status: VERIFIED
+    expected_size_gb: 50
+    expected_tokens_billions: 12
+    download_method: huggingface_streaming
+    preprocessing: code
+    notes: "The Stack v2 - permissively licensed code. GATED - requires authentication."
+
+  - name: codeparrot
+    category: code
+    source: huggingface
+    hf_id: codeparrot/codeparrot
+    subset: clean
+    enabled: true
+    weight: 0.05
+    language: [python]
+    license: Various (GitHub)
+    license_status: REVIEW_REQUIRED
+    expected_size_gb: 20
+    expected_tokens_billions: 5
+    download_method: huggingface_streaming
+    preprocessing: code
+    notes: "Python code from GitHub. License review recommended."
+
+  - name: starcoderdata
+    category: code
+    source: huggingface
+    hf_id: bigcode/starcoderdata
+    subset: python
+    enabled: true
+    weight: 0.05
+    language: [python]
+    license: Apache-2.0
+    license_status: VERIFIED
+    expected_size_gb: 25
+    expected_tokens_billions: 6
+    download_method: huggingface_streaming
+    preprocessing: code
+    notes: "StarCoder training data - permissively licensed Python code."
+
+  # ============================================================
+  # MATHEMATICS / REASONING
+  # ============================================================
+  - name: math_stackexchange
+    category: math
+    source: huggingface
+    hf_id: HuggingFaceH4/stack-exchange-math
+    subset: default
+    enabled: true
+    weight: 0.02
+    language: [en]
+    license: CC-BY-SA-4.0
+    license_status: VERIFIED
+    expected_size_gb: 1
+    expected_tokens_billions: 0.2
+    download_method: huggingface_streaming
+    preprocessing: math_qa
+    notes: "Math StackExchange Q&A. High-quality mathematical reasoning."
+
+  - name: proof_pile
+    category: math
+    source: huggingface
+    hf_id: hoskinson-center/proof-pile
+    subset: default
+    enabled: true
+    weight: 0.01
+    language: [en]
+    license: MIT
+    license_status: VERIFIED
+    expected_size_gb: 2
+    expected_tokens_billions: 0.5
+    download_method: huggingface_streaming
+    preprocessing: math_formal
+    notes: "Formal proofs (Lean, Isabelle, Coq). Mathematical reasoning."
+
+  - name: gsm8k
+    category: math
+    source: huggingface
+    hf_id: gsm8k
+    subset: main
+    enabled: true
+    weight: 0.005
+    language: [en]
+    license: MIT
+    license_status: VERIFIED
+    expected_size_gb: 0.01
+    expected_tokens_billions: 0.003
+    download_method: huggingface_streaming
+    preprocessing: math_qa
+    notes: "Grade school math problems. Reasoning training."
+
+  - name: math_dataset
+    category: math
+    source: huggingface
+    hf_id: Hendrycks/MATH
+    subset: default
+    enabled: true
+    weight: 0.01
+    language: [en]
+    license: MIT
+    license_status: VERIFIED
+    expected_size_gb: 0.5
+    expected_tokens_billions: 0.1
+    download_method: huggingface_streaming
+    preprocessing: math_qa
+    notes: "MATH dataset - competition math problems."
+
+  # ============================================================
+  # EDUCATIONAL / TEXTBOOKS
+  # ============================================================
+  - name: textbooks
+    category: education
+    source: huggingface
+    hf_id: allenai/textbooks
+    subset: default
+    enabled: true
+    weight: 0.02
+    language: [en]
+    license: Various
+    license_status: REVIEW_REQUIRED
+    expected_size_gb: 5
+    expected_tokens_billions: 1
+    download_method: huggingface_streaming
+    preprocessing: books
+    notes: "Educational textbooks. License review needed."
+
+  # ============================================================
+  # MULTILINGUAL (Vietnamese + other languages)
+  # ============================================================
+  - name: cultura_x_vi
+    category: multilingual
+    source: huggingface
+    hf_id: uonlp/CulturaX
+    subset: vi
+    enabled: true
+    weight: 0.04
+    language: [vi]
+    license: Various
+    license_status: VERIFIED
+    expected_size_gb: 10
+    expected_tokens_billions: 2
+    download_method: huggingface_streaming
+    preprocessing: multilingual
+    notes: "CulturaX Vietnamese subset (uonlp/CulturaX). High-quality Vietnamese web text."
+
+  - name: mc4_vi
+    category: multilingual
+    source: huggingface
+    hf_id: allenai/c4
+    subset: vi
+    enabled: true
+    weight: 0.03
+    language: [vi]
+    license: ODC-By-1.0
+    license_status: VERIFIED
+    expected_size_gb: 15
+    expected_tokens_billions: 3
+    download_method: huggingface_streaming
+    preprocessing: multilingual
+    notes: "C4 Vietnamese (allenai/c4). Large multilingual Common Crawl subset."
+
+  - name: mc4_multilingual
+    category: multilingual
+    source: huggingface
+    hf_id: allenai/c4
+    subset: zh,ja,ko,fr,de,es,pt,ru,ar,hi
+    enabled: true
+    weight: 0.06
+    language: [zh, ja, ko, fr, de, es, pt, ru, ar, hi]
+    license: ODC-By-1.0
+    license_status: VERIFIED
+    expected_size_gb: 100
+    expected_tokens_billions: 25
+    download_method: huggingface_streaming
+    preprocessing: multilingual
+    notes: "C4 top 10 non-English languages (allenai/c4). Large multilingual corpus."
+
+  - name: oscar_vi
+    category: multilingual
+    source: huggingface
+    hf_id: oscar-corpus/OSCAR-2301
+    subset: vi
+    enabled: true
+    weight: 0.02
+    language: [vi]
+    license: Various
+    license_status: VERIFIED
+    expected_size_gb: 8
+    expected_tokens_billions: 1.5
+    download_method: huggingface_streaming
+    preprocessing: multilingual
+    notes: "OSCAR Vietnamese. Additional Vietnamese web corpus."
+
+  # ============================================================
+  # TECHNICAL DOCUMENTATION
+  # ============================================================
+  - name: readthedocs
+    category: technical
+    source: huggingface
+    hf_id: codeparrot/readthedocs
+    subset: default
+    enabled: true
+    weight: 0.015
+    language: [en]
+    license: Various (project licenses)
+    license_status: REVIEW_REQUIRED
+    expected_size_gb: 5
+    expected_tokens_billions: 1
+    download_method: huggingface_streaming
+    preprocessing: technical
+    notes: "ReadTheDocs technical documentation (codeparrot/readthedocs). License review needed."
+
+  # ============================================================
+  # QUESTION/ANSWER / REASONING
+  # ============================================================
+  - name: stackexchange
+    category: qa
+    source: huggingface
+    hf_id: HuggingFaceH4/stack-exchange
+    subset: default
+    enabled: true
+    weight: 0.015
+    language: [en]
+    license: CC-BY-SA-3.0
+    license_status: VERIFIED
+    expected_size_gb: 20
+    expected_tokens_billions: 5
+    download_method: huggingface_streaming
+    preprocessing: qa
+    notes: "StackExchange network Q&A (HuggingFaceH4/stack-exchange). High-quality reasoning content."
+
+  # ============================================================
+  # COMPUTER VISION / IMAGE CLASSIFICATION
+  # ============================================================
+  - name: imagenet_1k
+    category: computer_vision
+    source: huggingface
+    hf_id: ILSVRC/imagenet-1k
+    subset: default
+    enabled: false
+    weight: 0.02
+    language: [en]
+    license: custom (ImageNet license)
+    license_status: REVIEW_REQUIRED
+    expected_size_gb: 150
+    expected_tokens_billions: 0
+    download_method: huggingface_streaming
+    preprocessing: image
+    modality: image
+    task_family: image_classification
+    notes: "ILSVRC ImageNet-1K (ILSVRC/imagenet-1k). Native images. Requires ImageNet license for commercial use. Not text-only."
+
+  # ============================================================
+  # COMPUTER USE / GUI INTERACTION
+  # ============================================================
+  - name: computer_use_large
+    category: computer_use
+    source: huggingface
+    hf_id: markov-ai/computer-use-large
+    subset: default
+    enabled: false
+    weight: 0.02
+    language: [en]
+    license: custom
+    license_status: REVIEW_REQUIRED
+    expected_size_gb: 500
+    expected_tokens_billions: 0
+    download_method: huggingface_streaming
+    preprocessing: screen_video
+    modality: video
+    task_family: gui_interaction
+    streaming: true
+    partial_download: true
+    resumable: true
+    notes: "markov-ai/computer-use-large. Screen/video/GUI interactions. Supports streaming/sharding/partial download. Hundreds of GB — do not require full local materialization."
+
+# ============================================================
+# DATASET PROFILES
+# ============================================================
+
+profiles:
+  tiny:
+    description: "Minimal dataset for debugging - uses synthetic data and tiny samples"
+    max_tokens: 100000
+    enabled_datasets: []
+    use_synthetic: true
+
+  prototype:
+    description: "Prototype 1.6B experiment - ~1-2B tokens total"
+    max_tokens: 2000000000
+    enabled_datasets:
+      - fineweb
+      - fineweb_edu
+      - dclm_baseline
+      - wikipedia_en
+      - wikipedia_vi
+      - arxiv
+      - codeparrot
+      - starcoderdata
+      - math_stackexchange
+      - gsm8k
+      - cultura_x_vi
+      - mc4_vi
+    # Override weights for prototype (renormalized)
+    weight_overrides:
+      fineweb: 0.30
+      fineweb_edu: 0.15
+      dclm_baseline: 0.10
+      wikipedia_en: 0.07
+      wikipedia_vi: 0.05
+      arxiv: 0.05
+      codeparrot: 0.08
+      starcoderdata: 0.07
+      math_stackexchange: 0.03
+      gsm8k: 0.02
+      cultura_x_vi: 0.05
+      mc4_vi: 0.03
+
+  # Future profiles (not implemented yet)
+  # scale_6p4b:
+  #   description: "6.4B model - ~10B tokens"
+  #   max_tokens: 10000000000
+  # scale_25b:
+  #   description: "25B model - ~50B tokens"
+  #   max_tokens: 50000000000
+  # scale_256b:
+  #   description: "256B model - ~500B tokens"
+  #   max_tokens: 500000000000

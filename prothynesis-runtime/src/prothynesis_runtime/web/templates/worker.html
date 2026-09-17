@@ -1,0 +1,71 @@
+{% extends "base.html" %} {% block content %}
+<div class="title">Worker</div>
+<div class="card">
+  <div class="row">
+    <div class="col">
+      <div class="title" style="font-size:14px;">Status</div>
+      <div id="worker-status" class="status-badge">{{ worker_status.status }}</div>
+      <div class="progress-bar"><span id="worker-progress" style="width: {{ worker_status.progress }}%;"></span></div>
+    </div>
+    <div class="col">
+      <div class="title" style="font-size:14px;">Current Solver</div>
+      <div id="worker-solver">{{ worker_status.current_solver or "None" }}</div>
+    </div>
+    <div class="col">
+      <div class="title" style="font-size:14px;">Tokens</div>
+      <div id="worker-tokens">{{ worker_status.tokens }}</div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="row">
+    <div class="col">
+      <div class="title" style="font-size:14px;">GPU</div>
+      <div id="worker-gpu">{{ worker_status.gpu.name or "N/A" }}</div>
+    </div>
+    <div class="col">
+      <div class="title" style="font-size:14px;">VRAM</div>
+      <div id="worker-vram">{{ worker_status.gpu.vram or "N/A" }}</div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="row">
+    <button id="start-btn">Start</button>
+    <button id="pause-btn" class="secondary">Pause</button>
+    <button id="stop-btn" class="danger">Stop</button>
+  </div>
+</div>
+<script>
+  async function refresh() {
+    const res = await fetch("/v1/worker/status");
+    const data = await res.json();
+    const badge = document.getElementById("worker-status");
+    badge.textContent = data.status || "UNKNOWN";
+    badge.className = "status-badge " + (data.status || "").toLowerCase();
+    document.getElementById("worker-progress").style.width = (data.progress || 0) + "%";
+    document.getElementById("worker-solver").textContent = data.current_solver || "None";
+    document.getElementById("worker-tokens").textContent = data.tokens || 0;
+    const gpuEl = document.getElementById("worker-gpu");
+    const vramEl = document.getElementById("worker-vram");
+    if (data.gpu && data.gpu.name) {
+      gpuEl.textContent = data.gpu.name;
+      vramEl.textContent = data.gpu.vram || "N/A";
+    }
+  }
+  document.getElementById("start-btn").addEventListener("click", async () => {
+    await fetch("/v1/worker/start", { method: "POST" });
+    refresh();
+  });
+  document.getElementById("pause-btn").addEventListener("click", async () => {
+    await fetch("/v1/worker/pause", { method: "POST" });
+    refresh();
+  });
+  document.getElementById("stop-btn").addEventListener("click", async () => {
+    await fetch("/v1/worker/stop", { method: "POST" });
+    refresh();
+  });
+  refresh();
+  setInterval(refresh, 2000);
+</script>
+{% endblock %}
